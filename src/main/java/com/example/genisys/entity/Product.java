@@ -3,6 +3,7 @@ package com.example.genisys.entity;
 import com.example.genisys.enums.GenderCategory;
 import lombok.Data;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
@@ -23,7 +24,7 @@ public class Product {
     @Column(name = "PRODUCT_NAME", nullable = false, unique = true)
     private String productName;
 
-    @Column(name="PRODUCT_PRICE", nullable = false)
+    @Column(name = "PRODUCT_PRICE", nullable = false)
     private double productPrice;
 
     @Column(name = "DISCOUNTED_PRICE", nullable = false)
