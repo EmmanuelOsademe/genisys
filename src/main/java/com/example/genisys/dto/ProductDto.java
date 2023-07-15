@@ -1,8 +1,5 @@
 package com.example.genisys.dto;
 
-import com.example.genisys.entity.Brand;
-import com.example.genisys.entity.Color;
-import com.example.genisys.entity.Size;
 import com.example.genisys.enums.GenderCategory;
 
 import javax.validation.constraints.NotBlank;
@@ -20,11 +17,11 @@ public class ProductDto {
     @NotBlank(message = "Discounted price may not be blank")
     private double discountedPrice;
 
-    @NotBlank(message = "Product image may not be blank")
-    private String productImage;
+//    @NotBlank(message = "Product image may not be blank")
+//    private String productImage;
 
     @NotBlank(message = "Product size may not be blank")
-    private Set<SizeDto> productSizes;
+    private Set<String> productSizes;
 
     @NotBlank(message = "Product color may not be blank")
     private Set<ColorDto> productColors;
@@ -40,16 +37,16 @@ public class ProductDto {
 
     public ProductDto(){}
 
-    public ProductDto(String productName, double productPrice, double discountedPrice, String productImage, Set<SizeDto> productSizes, Set<ColorDto> productColors, GenderCategory genderCategory, BrandDto productBrand, int productQuantity) {
+    public ProductDto(Long productId, String productName, double productPrice, double discountedPrice, Set<String> productSizes, Set<ColorDto> productColors, GenderCategory genderCategory, BrandDto productBrand, int productQuantity) {
         this.productName = productName;
         this.productPrice = productPrice;
         this.discountedPrice = discountedPrice;
-        this.productImage = productImage;
         this.productSizes = productSizes;
         this.productColors = productColors;
         this.genderCategory = genderCategory;
         this.productBrand = productBrand;
         this.productQuantity = productQuantity;
+        this.id = productId;
     }
 
     public Long getId() {
@@ -57,7 +54,7 @@ public class ProductDto {
     }
 
     public void setId(Long id) {
-        id = id;
+        this.id = id;
     }
 
     public String getProductName() {
@@ -72,18 +69,6 @@ public class ProductDto {
         return productPrice;
     }
 
-    public void setProductSizes(Set<SizeDto> productSizes) {
-        this.productSizes = productSizes;
-    }
-
-    public BrandDto getProductBrand() {
-        return productBrand;
-    }
-
-    public void setProductBrand(BrandDto productBrand) {
-        this.productBrand = productBrand;
-    }
-
     public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
@@ -96,24 +81,20 @@ public class ProductDto {
         this.discountedPrice = discountedPrice;
     }
 
-    public String getProductImage() {
-        return productImage;
-    }
-
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
-    }
-
-    public Set<SizeDto> getProductSizes() {
+    public Set<String> getProductSizes() {
         return productSizes;
     }
 
-    public void setProductSize(Set<SizeDto> productSizes) {
+    public void setProductSizes(Set<String> productSizes) {
         this.productSizes = productSizes;
     }
 
     public Set<ColorDto> getProductColors() {
         return productColors;
+    }
+
+    public void setProductColors(Set<ColorDto> productColors) {
+        this.productColors = productColors;
     }
 
     public GenderCategory getGenderCategory() {
@@ -124,6 +105,13 @@ public class ProductDto {
         this.genderCategory = genderCategory;
     }
 
+    public BrandDto getProductBrand() {
+        return productBrand;
+    }
+
+    public void setProductBrand(BrandDto productBrand) {
+        this.productBrand = productBrand;
+    }
 
     public int getProductQuantity() {
         return productQuantity;
@@ -131,9 +119,5 @@ public class ProductDto {
 
     public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
-    }
-
-    public void setProductColors(Set<ColorDto> productColors) {
-        this.productColors = productColors;
     }
 }

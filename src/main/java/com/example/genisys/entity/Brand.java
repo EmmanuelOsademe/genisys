@@ -1,15 +1,16 @@
 package com.example.genisys.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "BRAND")
 @NoArgsConstructor
 public class Brand {

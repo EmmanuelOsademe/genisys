@@ -10,88 +10,81 @@ import com.example.genisys.repository.BrandRepository;
 import com.example.genisys.repository.ColorRepository;
 import com.example.genisys.repository.ProductRepository;
 import com.example.genisys.repository.SizeRepository;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final SizeRepository sizeRepository;
     private final ColorRepository colorRepository;
     private final BrandRepository brandRepository;
 
-    public ProductService(
-                ProductRepository productRepository,
-                SizeRepository sizeRepository,
-                ColorRepository colorRepository,
-                BrandRepository brandRepository
-            )
-        {
-        this.productRepository = productRepository;
-        this.sizeRepository = sizeRepository;
-        this.colorRepository = colorRepository;
-        this.brandRepository = brandRepository;
-    }
+    public ResponseDto createProduct(ProductDto[] productRequest){
 
-    public ResponseDto createProduct(ProductDto productRequest){
+        for(ProductDto productDto: productRequest){
+            Optional<Product> existingProduct =  productRepository.findByProductName(productDto.getProductName());
+            if(existingProduct.isPresent()){
+                return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product already exists");
+            }
 
-        Optional<Product> existingProduct =  productRepository.findByProductName(productRequest.getProductName());
-        if(existingProduct.isPresent()){
-            return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product already exists");
+            Product product = new Product();
+            product.setProductName(productDto.getProductName());
+            product.setProductColors(getColors(productDto.getProductColors()));
+            product.setProductPrice(productDto.getProductPrice());
+            product.setProductImage(getImages(productDto.getProductColors()));
+            product.setProductSizes(getSizes(productDto.getProductSizes()));
+            product.setGenderCategory(productDto.getGenderCategory());
+            product.setProductBrand(getBrand(productDto.getProductBrand()));
+            product.setProductQuantity(productDto.getProductQuantity());
+            product.setDiscountedPrice(productDto.getDiscountedPrice());
+            productRepository.save(product);
         }
-
-        Product product = new Product();
-        product.setProductName(productRequest.getProductName());
-        product.setProductColors(getColors(productRequest.getProductColors()));
-        product.setProductPrice(productRequest.getProductPrice());
-        product.setProductImage(productRequest.getProductImage());
-        product.setProductSizes(getSizes(productRequest.getProductSizes()));
-        product.setGenderCategory(productRequest.getGenderCategory());
-        product.setProductBrand(getBrand(productRequest.getProductBrand()));
-        product.setProductQuantity(productRequest.getProductQuantity());
-        productRepository.save(product);
 
         return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product successfully created");
     }
 
-//    public ResponseDto updateProductById(Long id, ProductDto productRequest){
-//        Optional<Product> existingProduct = productRepository.findById(id);
-//        if(!existingProduct.isPresent()){
-//            return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product does not exist");
-//        }
-//
-//        Product dbProduct = existingProduct.get();
-//
-//        dbProduct.setProductName(productRequest.getProductName());
-//        dbProduct.setProductPrice(productRequest.getProductPrice());
-//        dbProduct.setProductColors(productRequest.getProductColors());
-//        dbProduct.setProductSizes(productRequest.getProductSizes());
-//        dbProduct.setProductImage(productRequest.getProductImage());
-//        dbProduct.setGenderCategory(productRequest.getGenderCategory());
-//        dbProduct.setProductBrand(productRequest.getProductBrand());
-//        dbProduct.setProductQuantity(productRequest.getProductQuantity());
-//        productRepository.save(dbProduct);
-//
-//        return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product successfully updated");
-//    }
+    public ResponseDto updateProductById(Long id, ProductDto productRequest){
+        Optional<Product> existingProduct = productRepository.findById(id);
+        if(!existingProduct.isPresent()){
+            return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product does not exist");
+        }
+
+        Product dbProduct = existingProduct.get();
+
+        dbProduct.setProductName(productRequest.getProductName());
+        dbProduct.setProductPrice(productRequest.getProductPrice());
+        dbProduct.setProductColors(getColors(productRequest.getProductColors()));
+        dbProduct.setProductSizes(getSizes(productRequest.getProductSizes()));
+        dbProduct.setProductImage(getImages(productRequest.getProductColors()));
+        dbProduct.setGenderCategory(productRequest.getGenderCategory());
+        dbProduct.setProductBrand(getBrand(productRequest.getProductBrand()));
+        dbProduct.setProductQuantity(productRequest.getProductQuantity());
+        productRepository.save(dbProduct);
+
+        return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product successfully updated");
+    }
 
     public List<ProductDto> getAllProducts(){
         List<Product> products = productRepository.findAll();
         List<ProductDto> returnedProducts = new ArrayList<>();
 
         for(Product product: products){
-            returnedProducts.add(createProductRequest(product));
+            ProductDto productDto = convertEntityToDto(product);
+            returnedProducts.add(productDto);
         }
+
         return returnedProducts;
     }
 
     public ProductDto getProductById(Long id){
         Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
-            return createProductRequest(product.get());
+            return convertEntityToDto(product.get());
         }
 
         return new ProductDto();
@@ -108,44 +101,51 @@ public class ProductService {
         return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product has been deleted");
     }
 
-    private ProductDto createProductRequest(Product product){
+    private ProductDto convertEntityToDto(Product product){
         ProductDto productRequest = new ProductDto();
-        Set<ColorDto> colorDtos = product.getProductColors().stream()
-                .map(color -> {
-                    ColorDto colorDto = new ColorDto();
-                    colorDto.setColor(color.getColor());
-                    return colorDto;
-                }).collect(Collectors.toSet());
 
-        Set<SizeDto> sizeDtos = product.getProductSizes().stream()
+        List<String> imageList = new ArrayList<>(product.getProductImage());
+        List<Color> colorList = new ArrayList<>(product.getProductColors());
+
+        Set<ColorDto> colors = new HashSet<>();
+
+        for(int i = 0; i < imageList.size(); i++){
+            ColorDto colorDto = new ColorDto();
+            colorDto.setImage(imageList.get(i));
+            colorDto.setColor(colorList.get(i).getColor());
+            colors.add(colorDto);
+        }
+
+
+
+        Set<String> sizeDtos = product.getProductSizes().stream()
                 .map(size -> {
-                    SizeDto sizeDto = new SizeDto();
-                    sizeDto.setSize(size.getSize());
-                    return sizeDto;
+                    return size.getSize();
                 }).collect(Collectors.toSet());
 
         BrandDto brandDto = new BrandDto();
         brandDto.setName(product.getProductBrand().getBrandName());
+
         productRequest.setId(product.getId());
         productRequest.setProductName(product.getProductName());
         productRequest.setProductPrice(product.getProductPrice());
-        productRequest.setProductColors(colorDtos);
-        productRequest.setProductSize(sizeDtos);
-        productRequest.setProductImage(product.getProductImage());
+        productRequest.setProductColors(colors);
+        productRequest.setProductSizes(sizeDtos);
         productRequest.setGenderCategory(product.getGenderCategory());
         productRequest.setProductBrand(brandDto);
         productRequest.setProductQuantity(product.getProductQuantity());
+        productRequest.setDiscountedPrice(product.getDiscountedPrice());
         return productRequest;
     }
 
 
-    private Set<Size> getSizes(Set<SizeDto> sizes){
+    public Set<Size> getSizes(Set<String> sizes){
         Set<Size> newSizes = new HashSet<>();
-        for(SizeDto size: sizes){
-            Optional<Size> existingSize = sizeRepository.findBySize(size.getSize().toLowerCase());
+        for(String size: sizes){
+            Optional<Size> existingSize = sizeRepository.findBySize(size.toLowerCase());
             if(!existingSize.isPresent()){
                 Size newSize = new Size();
-                newSize.setSize(size.getSize().toLowerCase());
+                newSize.setSize(size.toLowerCase());
                 sizeRepository.save(newSize);
             }else{
                 newSizes.add(existingSize.get());
@@ -154,7 +154,7 @@ public class ProductService {
         return newSizes;
     }
 
-    private Set<Color> getColors(Set<ColorDto> colors){
+    public Set<Color> getColors(Set<ColorDto> colors){
         Set<Color> newColors = new HashSet<>();
         for(ColorDto color: colors){
             Optional<Color> existingColor = colorRepository.findByColor(color.getColor().toLowerCase());
@@ -168,6 +168,14 @@ public class ProductService {
             }
         }
         return newColors;
+    }
+
+    private Set<String> getImages(Set<ColorDto> colors){
+        Set<String> images = new HashSet<>();
+        for(ColorDto color: colors){
+            images.add(color.getImage());
+        }
+        return images;
     }
 
     private Brand getBrand(BrandDto brand){

@@ -1,7 +1,8 @@
 package com.example.genisys.entity;
 
 import com.example.genisys.enums.GenderCategory;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import javax.persistence.*;
@@ -9,7 +10,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "PRODUCT")
-@Data
+@Getter
+@Setter
 public class Product {
 
     @Id
@@ -30,8 +32,9 @@ public class Product {
     @Column(name = "DISCOUNTED_PRICE", nullable = false)
     private double discountedPrice;
 
+    @ElementCollection(targetClass = String.class)
     @Column(name = "PRODUCT_IMAGE", nullable = false)
-    private String productImage;
+    private Set<String> productImage;
 
     @ManyToMany
     @JoinTable(name = "PRODUCT_SIZES",

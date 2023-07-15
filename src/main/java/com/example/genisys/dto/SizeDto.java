@@ -1,7 +1,12 @@
 package com.example.genisys.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.validation.constraints.NotBlank;
 
+@Getter
+@Setter
 public class SizeDto {
     private Long id;
 
@@ -10,23 +15,4 @@ public class SizeDto {
 
     public SizeDto(){};
 
-    public SizeDto(String size) {
-        this.size = size;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
 }

@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,8 +17,8 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("create-product")
-    public ResponseEntity<ResponseDto> createProduct(@RequestBody ProductDto product){
-        return  new ResponseEntity<>(productService.createProduct(product), HttpStatus.CREATED);
+    public ResponseEntity<ResponseDto> createProduct(@RequestBody ProductDto[] products){
+        return  new ResponseEntity<>(productService.createProduct(products), HttpStatus.CREATED);
     }
 
 //    @PutMapping("update-product")

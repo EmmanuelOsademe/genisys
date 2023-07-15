@@ -1,10 +1,11 @@
 package com.example.genisys.dto;
 
-import com.example.genisys.entity.Brand;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-@Data
+@Getter
+@Setter
 public class BrandDto {
 
     private Long id;
@@ -13,6 +14,4 @@ public class BrandDto {
     private String name;
 
     public BrandDto(){};
-
-
 }

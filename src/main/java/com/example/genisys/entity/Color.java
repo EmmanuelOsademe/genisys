@@ -23,4 +23,8 @@ public class Color {
     @JsonIgnore
     @ManyToMany(mappedBy = "productColors")
     private Set<Product> products;
+
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "colors")
+//    private Set<CartProduct> cartProducts;
 }

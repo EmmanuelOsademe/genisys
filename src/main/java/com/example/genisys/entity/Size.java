@@ -24,4 +24,5 @@ public class Size {
     @JsonIgnore
     @ManyToMany(mappedBy = "productSizes")
     private Set<Product> products;
+
 }
