@@ -22,7 +22,7 @@ public class Size {
     private String size;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "productSizes")
+    @ManyToMany(mappedBy = "productSizes", cascade = CascadeType.ALL)
     private Set<Product> products;
 
 }

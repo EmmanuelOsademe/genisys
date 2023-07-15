@@ -36,14 +36,14 @@ public class Product {
     @Column(name = "PRODUCT_IMAGE", nullable = false)
     private Set<String> productImage;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "PRODUCT_SIZES",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "size_id")
     )
     private Set<Size> productSizes;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "PRODUCT_COLORS",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "color_id")
@@ -54,7 +54,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private GenderCategory genderCategory;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Brand productBrand; // Nike
 
     @Column(name = "PRODUCT_QUANTITY", nullable = false)

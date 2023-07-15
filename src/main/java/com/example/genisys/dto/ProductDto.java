@@ -17,9 +17,6 @@ public class ProductDto {
     @NotBlank(message = "Discounted price may not be blank")
     private double discountedPrice;
 
-//    @NotBlank(message = "Product image may not be blank")
-//    private String productImage;
-
     @NotBlank(message = "Product size may not be blank")
     private Set<String> productSizes;
 

@@ -21,10 +21,6 @@ public class Color {
     private String color;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "productColors")
+    @ManyToMany(mappedBy = "productColors", cascade = CascadeType.ALL)
     private Set<Product> products;
-
-//    @JsonIgnore
-//    @ManyToMany(mappedBy = "colors")
-//    private Set<CartProduct> cartProducts;
 }

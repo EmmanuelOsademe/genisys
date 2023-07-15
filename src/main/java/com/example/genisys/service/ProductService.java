@@ -27,6 +27,12 @@ public class ProductService {
     public ResponseDto createProduct(ProductDto[] productRequest){
 
         for(ProductDto productDto: productRequest){
+            if(!(productDto instanceof ProductDto)){
+                return new ResponseDto(ResponseCodes.INVALID_INPUT.getCode(), "Invalid product provided");
+            }
+        }
+
+        for(ProductDto productDto: productRequest){
             Optional<Product> existingProduct =  productRepository.findByProductName(productDto.getProductName());
             if(existingProduct.isPresent()){
                 return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product already exists");
@@ -58,6 +64,7 @@ public class ProductService {
 
         dbProduct.setProductName(productRequest.getProductName());
         dbProduct.setProductPrice(productRequest.getProductPrice());
+        dbProduct.setDiscountedPrice(productRequest.getDiscountedPrice());
         dbProduct.setProductColors(getColors(productRequest.getProductColors()));
         dbProduct.setProductSizes(getSizes(productRequest.getProductSizes()));
         dbProduct.setProductImage(getImages(productRequest.getProductColors()));
@@ -83,6 +90,7 @@ public class ProductService {
 
     public ProductDto getProductById(Long id){
         Optional<Product> product = productRepository.findById(id);
+
         if(product.isPresent()){
             return convertEntityToDto(product.get());
         }
@@ -97,7 +105,7 @@ public class ProductService {
             return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product does not exist");
         }
 
-        productRepository.deleteById(id);
+        productRepository.delete(existingProduct.get());
         return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product has been deleted");
     }
 
