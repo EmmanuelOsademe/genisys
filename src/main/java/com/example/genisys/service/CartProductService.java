@@ -43,22 +43,8 @@ public class CartProductService {
         return returnedProducts;
     }
 
-    private CartProductDto convertEntityToDto(CartProduct product){
+    public CartProductDto convertEntityToDto(CartProduct product){
         CartProductDto cartProduct = new CartProductDto();
-
-//        Set<ColorDto> colors = product.getColors().stream()
-//                .map(color -> {
-//                    ColorDto colorDto = new ColorDto();
-//                    colorDto.setColor(color.getColor());
-//                    return colorDto;
-//                }).collect(Collectors.toSet());
-//
-//        Set<SizeDto> sizes = product.getSizes().stream()
-//                .map(size -> {
-//                    SizeDto sizeDto = new SizeDto();
-//                    sizeDto.setSize(size.getSize());
-//                    return sizeDto;
-//                }).collect(Collectors.toSet());
 
         cartProduct.setPrice(product.getPrice());
         cartProduct.setColors(product.getColors());

@@ -32,9 +32,12 @@ public class ProductService {
             }
         }
 
+        boolean alreadyExists = false;
+
         for(ProductDto productDto: productRequest){
             Optional<Product> existingProduct =  productRepository.findByProductName(productDto.getProductName());
             if(existingProduct.isPresent()){
+                alreadyExists = true;
                 return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product already exists");
             }
 
@@ -51,7 +54,11 @@ public class ProductService {
             productRepository.save(product);
         }
 
-        return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product successfully created");
+        if(alreadyExists){
+            return new ResponseDto(ResponseCodes.ERROR.getCode(), "One or more products already exist");
+        }else{
+            return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Products successfully created");
+        }
     }
 
     public ResponseDto updateProductById(Long id, ProductDto productRequest){
@@ -73,7 +80,7 @@ public class ProductService {
         dbProduct.setProductQuantity(productRequest.getProductQuantity());
         productRepository.save(dbProduct);
 
-        return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product successfully updated");
+        return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Products successfully updated");
     }
 
     public List<ProductDto> getAllProducts(){
@@ -109,7 +116,7 @@ public class ProductService {
         return new ResponseDto(ResponseCodes.SUCCESS.getCode(), "Product has been deleted");
     }
 
-    private ProductDto convertEntityToDto(Product product){
+    public ProductDto convertEntityToDto(Product product){
         ProductDto productRequest = new ProductDto();
 
         List<String> imageList = new ArrayList<>(product.getProductImage());
