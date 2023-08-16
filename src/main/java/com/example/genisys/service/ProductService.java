@@ -36,6 +36,7 @@ public class ProductService {
 
         for(ProductDto productDto: productRequest){
             Optional<Product> existingProduct =  productRepository.findByProductName(productDto.getProductName());
+
             if(existingProduct.isPresent()){
                 alreadyExists = true;
                 return new ResponseDto(ResponseCodes.ERROR.getCode(), "Product already exists");
