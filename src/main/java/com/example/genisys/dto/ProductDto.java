@@ -1,11 +1,14 @@
 package com.example.genisys.dto;
 
 import com.example.genisys.enums.GenderCategory;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 public class ProductDto {
-    private Integer Id;
+    private Long id;
 
     @NotBlank(message = "Product name cannot be blank")
     private String productName;
@@ -16,44 +19,41 @@ public class ProductDto {
     @NotBlank(message = "Discounted price may not be blank")
     private double discountedPrice;
 
-    @NotBlank(message = "Product image may not be blank")
-    private String productImage;
-
     @NotBlank(message = "Product size may not be blank")
-    private String productSize;
+    private Set<String> productSizes;
 
     @NotBlank(message = "Product color may not be blank")
-    private String productColor;
+    private Set<ColorDto> productColors;
 
     @NotBlank(message = "Product gender category may not be blank")
     private GenderCategory genderCategory;
 
-    @NotBlank(message = "Unique category may not be blank")
-    private String uniqueCategory;
+    @NotBlank(message = "Brand may not be blank")
+    private BrandDto productBrand;
 
     @NotBlank(message = "Product quantity may not be blank")
     private int productQuantity;
 
     public ProductDto(){}
 
-    public ProductDto(String productName, double productPrice, double discountedPrice, String productImage, String productSize, String productColor, GenderCategory genderCategory, String uniqueCategory, int productQuantity) {
+    public ProductDto(Long productId, String productName, double productPrice, double discountedPrice, Set<String> productSizes, Set<ColorDto> productColors, GenderCategory genderCategory, BrandDto productBrand, int productQuantity) {
         this.productName = productName;
         this.productPrice = productPrice;
         this.discountedPrice = discountedPrice;
-        this.productImage = productImage;
-        this.productSize = productSize;
-        this.productColor = productColor;
+        this.productSizes = productSizes;
+        this.productColors = productColors;
         this.genderCategory = genderCategory;
-        this.uniqueCategory = uniqueCategory;
+        this.productBrand = productBrand;
         this.productQuantity = productQuantity;
+        this.id = productId;
     }
 
-    public Integer getId() {
-        return Id;
+    public Long getId() {
+        return id;
     }
 
-    public void setId(Integer id) {
-        Id = id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getProductName() {
@@ -80,24 +80,20 @@ public class ProductDto {
         this.discountedPrice = discountedPrice;
     }
 
-    public String getProductImage() {
-        return productImage;
+    public Set<String> getProductSizes() {
+        return productSizes;
     }
 
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
+    public void setProductSizes(Set<String> productSizes) {
+        this.productSizes = productSizes;
     }
 
-    public String getProductSize() {
-        return productSize;
+    public Set<ColorDto> getProductColors() {
+        return productColors;
     }
 
-    public void setProductSize(String productSize) {
-        this.productSize = productSize;
-    }
-
-    public String getProductColor() {
-        return productColor;
+    public void setProductColors(Set<ColorDto> productColors) {
+        this.productColors = productColors;
     }
 
     public GenderCategory getGenderCategory() {
@@ -108,12 +104,12 @@ public class ProductDto {
         this.genderCategory = genderCategory;
     }
 
-    public String getUniqueCategory() {
-        return uniqueCategory;
+    public BrandDto getProductBrand() {
+        return productBrand;
     }
 
-    public void setUniqueCategory(String uniqueCategory) {
-        this.uniqueCategory = uniqueCategory;
+    public void setProductBrand(BrandDto productBrand) {
+        this.productBrand = productBrand;
     }
 
     public int getProductQuantity() {
@@ -122,9 +118,5 @@ public class ProductDto {
 
     public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
-    }
-
-    public void setProductColor(String productColor) {
-        this.productColor = productColor;
     }
 }
